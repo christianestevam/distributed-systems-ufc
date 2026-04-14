@@ -9,11 +9,14 @@ echo ==========================================
 echo.
 
 if "%1"=="" (
-    echo Digite o IP do servidor:
+    echo Digite o IP do servidor (exemplo: 192.168.0.10):
     set /p IP_SERVIDOR=
 ) else (
     set IP_SERVIDOR=%1
 )
+
+REM Remover porta se o usuario digitar junto
+for /f "tokens=1 delims=:" %%a in ("%IP_SERVIDOR%") do set IP_SERVIDOR=%%a
 
 set PORTA=7070
 if not "%2"=="" set PORTA=%2

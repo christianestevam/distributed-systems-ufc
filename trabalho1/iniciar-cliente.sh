@@ -9,11 +9,15 @@ echo ""
 
 # Usar argumentos ou pedir ao usuário
 if [ -z "$1" ]; then
-    echo "Digite o IP do servidor:"
-    read IP_SERVIDOR
+    echo "Digite o IP do servidor (exemplo: 192.168.0.10):"
+    read IP_INPUT
+    IP_SERVIDOR=$IP_INPUT
 else
     IP_SERVIDOR=$1
 fi
+
+# Remover porta se o usuário digitar junto (ex: 192.168.0.6:7070 → 192.168.0.6)
+IP_SERVIDOR=$(echo "$IP_SERVIDOR" | cut -d':' -f1)
 
 PORTA=${2:-7070}
 
