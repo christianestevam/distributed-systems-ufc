@@ -1,4 +1,4 @@
-package main.java.br.ufc.ds.trabalho2.rmi;
+package br.ufc.ds.trabalho2.rmi;
 
 import java.io.Serializable;
 

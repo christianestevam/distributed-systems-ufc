@@ -1,4 +1,4 @@
-package main.java.br.ufc.ds.trabalho2.app;
+package br.ufc.ds.trabalho2.app;
 
 import br.ufc.ds.trabalho2.model.*;
 import java.io.Serializable;
