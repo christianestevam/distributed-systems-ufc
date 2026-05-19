@@ -1,0 +1,63 @@
+# Java
+*.class
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+
+# Compilação
+out/
+target/
+bin/
+build/
+dist/
+
+# IDE
+.vscode/
+.idea/
+*.iml
+*.iws
+*.ipr
+*.sw[op]
+*~
+
+# Maven
+.m2/
+pom.xml.tag
+pom.xml.releaseBackup
+release.properties
+
+# Gradle
+.gradle/
+gradle/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+.directory
+
+# Logs
+*.log
+logs/
+
+# Node (se usar)
+node_modules/
+package-lock.json
+
+# Temporários
+*.tmp
+*.temp
+~*
+
+# Arquivo de configuração local (se houver)
+local.properties

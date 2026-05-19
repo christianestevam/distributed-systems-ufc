@@ -9,17 +9,30 @@ echo ""
 
 # Usar argumentos ou pedir ao usuário
 if [ -z "$1" ]; then
-    echo "Digite o IP do servidor (exemplo: 192.168.0.10):"
-    read IP_INPUT
-    IP_SERVIDOR=$IP_INPUT
+    echo "Digite o host do servidor (exemplo: 192.168.0.10 ou https://exemplo.trycloudflare.com):"
+    read INPUT_HOST
 else
-    IP_SERVIDOR=$1
+    INPUT_HOST=$1
 fi
 
-# Remover porta se o usuário digitar junto (ex: 192.168.0.6:7070 → 192.168.0.6)
-IP_SERVIDOR=$(echo "$IP_SERVIDOR" | cut -d':' -f1)
+# Extrai hostname e opcionalmente porta de uma URL completa (remove esquema e path)
+# Exemplos de entrada aceitáveis:
+# 192.168.0.6:7070
+# https://fathers-enlarge-pipes-regional.trycloudflare.com
+# tcp://example.trycloudflare.com:12345
 
-PORTA=${2:-7070}
+RAW_HOST=$(echo "$INPUT_HOST" | sed -E 's#^.*://##' | sed -E 's#/.*$##')
+
+HOST_ONLY=$(echo "$RAW_HOST" | cut -d':' -f1)
+POSSIBLE_PORT=$(echo "$RAW_HOST" | awk -F: '{print $2}')
+
+if [ -n "$POSSIBLE_PORT" ]; then
+    IP_SERVIDOR=$HOST_ONLY
+    PORTA=$POSSIBLE_PORT
+else
+    IP_SERVIDOR=$HOST_ONLY
+    PORTA=${2:-7070}
+fi
 
 echo ""
 echo "Conectando em: $IP_SERVIDOR:$PORTA"

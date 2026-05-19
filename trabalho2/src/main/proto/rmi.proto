@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package br.ufc.ds.trabalho2.protobuf;
+
+option java_multiple_files = true;
+option java_package = "br.ufc.ds.trabalho2.protobuf";
+option java_outer_classname = "RmiProto";
+
+// ==================== RMI Protocol ====================
+
+message RMIRequest {
+    int32 messageType = 1;         // 0 = Request
+    int32 requestId = 2;
+    string objectReference = 3;
+    string methodId = 4;
+    bytes arguments = 5;
+}
+
+message RMIReply {
+    int32 messageType = 1;         // 1 = Reply
+    int32 requestId = 2;
+    bytes result = 3;
+    string exception = 4;
+    bool success = 5;
+}
+
+message RemoteObjectRef {
+    string objectReference = 1;
+    string hostAddress = 2;
+    int32 port = 3;
+    string serviceVersion = 4;
+}
