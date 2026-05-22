@@ -4,26 +4,31 @@ import br.ufc.ds.trabalho2.app.InvestidorServiceImpl;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.Naming;
+import java.net.InetAddress;
 
 /**
  * Launcher that publishes InvestidorServiceImpl in the RMI registry.
  * Uses Java RMI (no manual sockets).
  */
 public class RMIServer {
-    private int port;
+    private final String host;
+    private final int port;
 
-    public RMIServer(int port) {
+    public RMIServer(String host, int port) {
+        this.host = host;
         this.port = port;
     }
 
     public void start() {
         try {
+            System.setProperty("java.rmi.server.hostname", host);
+            System.out.println("[RMIServer] Using RMI hostname: " + host);
             System.out.println("[RMIServer] Starting RMI registry on port " + port + "...");
             Registry registry = LocateRegistry.createRegistry(port);
 
             InvestidorServiceImpl service = new InvestidorServiceImpl();
             String name = "investidor_service";
-            String url = String.format("rmi://localhost:%d/%s", port, name);
+            String url = String.format("rmi://%s:%d/%s", host, port, name);
             Naming.rebind(url, service);
 
             System.out.println("[RMIServer] Service bound at " + url);
@@ -42,8 +47,21 @@ public class RMIServer {
     }
 
     public static void main(String[] args) throws Exception {
-        int port = args.length > 0 ? Integer.parseInt(args[0]) : 1099;
-        RMIServer server = new RMIServer(port);
+        String host;
+        int port;
+
+        if (args.length >= 2) {
+            host = args[0];
+            port = Integer.parseInt(args[1]);
+        } else if (args.length == 1) {
+            host = InetAddress.getLocalHost().getHostAddress();
+            port = Integer.parseInt(args[0]);
+        } else {
+            host = InetAddress.getLocalHost().getHostAddress();
+            port = 1099;
+        }
+
+        RMIServer server = new RMIServer(host, port);
         server.start();
     }
 }
