@@ -1,115 +1,48 @@
 package br.ufc.ds.trabalho2.rmi;
 
-import java.io.*;
-import java.lang.reflect.Method;
+import br.ufc.ds.trabalho2.app.InvestidorServiceImpl;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.Naming;
 
 /**
- * Servidor RMI que aguarda requisições e executa métodos remotos.
+ * Launcher that publishes InvestidorServiceImpl in the RMI registry.
+ * Uses Java RMI (no manual sockets).
  */
 public class RMIServer {
-    private RMICommunication communication;
-    private RemoteObjectManager objectManager;
     private int port;
 
-    public RMIServer(int port) throws Exception {
+    public RMIServer(int port) {
         this.port = port;
-        this.communication = new RMICommunication(port);
-        this.objectManager = new RemoteObjectManager();
-    }
-
-    public void registerRemoteObject(String objectName, Object object) {
-        objectManager.registerObject(objectName, object);
-        System.out.println("[RMIServer] Objeto remoto registrado: " + objectName);
     }
 
     public void start() {
-        System.out.println("[RMIServer] Servidor RMI aguardando requisições na porta " + port + "...");
-        
-        while (true) {
+        try {
+            System.out.println("[RMIServer] Starting RMI registry on port " + port + "...");
+            Registry registry = LocateRegistry.createRegistry(port);
+
+            InvestidorServiceImpl service = new InvestidorServiceImpl();
+            String name = "investidor_service";
+            String url = String.format("rmi://localhost:%d/%s", port, name);
+            Naming.rebind(url, service);
+
+            System.out.println("[RMIServer] Service bound at " + url);
+            System.out.println("[RMIServer] Server running — press Ctrl+C to stop.");
+
+            // Keep server running
             try {
-                RMIRequest request = communication.getRequest();
-                System.out.println("[RMIServer] Requisição: " + request);
-                
-                new Thread(() -> processRequest(request)).start();
-                
-            } catch (Exception e) {
-                System.err.println("[RMIServer] Erro: " + e.getMessage());
+                Thread.sleep(Long.MAX_VALUE);
+            } catch (InterruptedException ie) {
+                Thread.currentThread().interrupt();
             }
-        }
-    }
-
-    private void processRequest(RMIRequest request) {
-        try {
-            Object remoteObject = objectManager.getObject(request.getObjectReference());
-            
-            if (remoteObject == null) {
-                System.err.println("[RMIServer] Objeto nao encontrado: " + request.getObjectReference());
-                return;
-            }
-
-            Object[] methodArgs = deserializeArguments(request.getArguments());
-            Method method = findMethod(remoteObject.getClass(), request.getMethodId(), methodArgs);
-            
-            if (method == null) {
-                System.err.println("[RMIServer] Metodo nao encontrado: " + request.getMethodId());
-                return;
-            }
-
-            Object result = method.invoke(remoteObject, methodArgs);
-            byte[] resultBytes = serializeResult(result);
-            
-            System.out.println("[RMIServer] Metodo executado: " + request.getMethodId());
-            
         } catch (Exception e) {
-            System.err.println("[RMIServer] Erro ao processar: " + e.getMessage());
+            System.err.println("[RMIServer] Failed to start RMI server: " + e.getMessage());
+            e.printStackTrace();
         }
-    }
-
-    private Method findMethod(Class<?> clazz, String methodName, Object[] args) {
-        for (Method method : clazz.getMethods()) {
-            if (method.getName().equals(methodName)) {
-                Class<?>[] paramTypes = method.getParameterTypes();
-                if (paramTypes.length == args.length) {
-                    boolean compatible = true;
-                    for (int i = 0; i < paramTypes.length; i++) {
-                        if (args[i] != null && !paramTypes[i].isAssignableFrom(args[i].getClass())) {
-                            compatible = false;
-                            break;
-                        }
-                    }
-                    if (compatible) {
-                        return method;
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
-    private Object[] deserializeArguments(byte[] data) throws IOException {
-        if (data == null || data.length == 0) {
-            return new Object[0];
-        }
-        
-        try {
-            ByteArrayInputStream bais = new ByteArrayInputStream(data);
-            ObjectInputStream ois = new ObjectInputStream(bais);
-            return (Object[]) ois.readObject();
-        } catch (ClassNotFoundException e) {
-            throw new IOException("Erro ao desserializar: " + e.getMessage());
-        }
-    }
-
-    private byte[] serializeResult(Object result) throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(result);
-        oos.flush();
-        return baos.toByteArray();
     }
 
     public static void main(String[] args) throws Exception {
-        int port = args.length > 0 ? Integer.parseInt(args[0]) : 9999;
+        int port = args.length > 0 ? Integer.parseInt(args[0]) : 1099;
         RMIServer server = new RMIServer(port);
         server.start();
     }
