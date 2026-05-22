@@ -227,8 +227,8 @@ mvn clean compile
 cd trabalho2
 
 # Via Maven
-mvn exec:java -Dexec.mainClass="br.ufc.ds.trabalho2.rmi.RMIServer" \
-              -Dexec.args="localhost 5000"
+
+
 
 # Ou via script
 ./servidor.sh

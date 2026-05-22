@@ -1,69 +1,53 @@
 #!/bin/bash
 
-# Script para compilar projeto com Protocol Buffers (usando javac)
+# Script para compilar Trabalho 2 com Maven
 
 echo "=========================================="
 echo "Compilando Trabalho 2 com Protocol Buffers"
 echo "=========================================="
 echo ""
 
-# Verificar se protoc está instalado
-if ! command -v protoc &> /dev/null; then
-    echo "✗ protoc não encontrado. Instalando..."
+# Verificar se Maven está instalado
+if ! command -v mvn &> /dev/null; then
+    echo "✗ Maven não encontrado. Instalando..."
     if [[ "$OSTYPE" == "darwin"* ]]; then
-        brew install protobuf
+        brew install maven
     elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
-        sudo apt-get install protobuf-compiler -y
+        sudo apt-get install maven -y
     else
-        echo "Instale protobuf manualmente de: https://github.com/protocolbuffers/protobuf/releases"
+        echo "Instale Maven manualmente de: https://maven.apache.org/download.cgi"
         exit 1
     fi
 fi
 
-# Criar diretórios
-mkdir -p out
-mkdir -p src/main/java/br/ufc/ds/trabalho2/protobuf
-
-# Compilar Protocol Buffers
-echo "[1/3] Compilando arquivos .proto..."
-protoc --java_out=src/main/java \
-       --proto_path=src/main/proto \
-       src/main/proto/rmi.proto \
-       src/main/proto/model.proto
-
+# Limpar build anterior
+echo "[1/2] Limpando build anterior..."
+mvn clean -q
 if [ $? -ne 0 ]; then
-    echo "✗ Erro ao compilar Protocol Buffers"
+    echo "✗ Erro ao limpar"
     exit 1
 fi
-echo "✓ Protocol Buffers compilados"
+echo "✓ Build anterior removido"
 echo ""
 
-# Baixar libprotobuf (se necessário)
-echo "[2/3] Verificando dependências Java..."
-if [ ! -f "lib/protobuf-java-3.21.1.jar" ]; then
-    mkdir -p lib
-    echo "  Baixando protobuf-java-3.21.1.jar..."
-    curl -s -L https://repo1.maven.org/maven2/com/google/protobuf/protobuf-java/3.21.1/protobuf-java-3.21.1.jar \
-         -o lib/protobuf-java-3.21.1.jar
-    if [ $? -ne 0 ]; then
-        echo "✗ Erro ao baixar protobuf-java"
-        exit 1
-    fi
-fi
-echo "✓ Dependências OK"
-echo ""
-
-# Compilar arquivos Java
-echo "[3/3] Compilando arquivos .java..."
-CLASSPATH="lib/protobuf-java-3.21.1.jar:."
-find src/main/java -name "*.java" | xargs javac -cp $CLASSPATH -d out 2>&1
-
+# Compilar código Java (Maven gera Protobuf automaticamente)
+echo "[2/2] Compilando arquivos Java e Protocol Buffers..."
+mvn compile -q
 if [ $? -eq 0 ]; then
     echo "✓ Compilação bem-sucedida!"
-    echo "Arquivos compilados em: out/"
+    echo ""
+    echo "=========================================="
+    echo "Próximos passos:"
+    echo "=========================================="
+    echo ""
+    echo "Terminal 1 - Servidor:"
+    echo "  mvn exec:java -Dexec.mainClass=\"br.ufc.ds.trabalho2.rmi.RMIServer\" -Dexec.args=\"localhost 5000\""
+    echo ""
+    echo "Terminal 2 - Cliente:"
+    echo "  mvn exec:java -Dexec.mainClass=\"br.ufc.ds.trabalho2.rmi.RMIClient\" -Dexec.args=\"localhost 5000\""
+    echo ""
 else
     echo "✗ Erro na compilação Java"
     exit 1
 fi
-echo ""
 echo "=========================================="
