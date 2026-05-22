@@ -1,9 +1,9 @@
 syntax = "proto3";
 
-package br.ufc.ds.trabalho2.protobuf;
+package br.ufc.ds.trabalho2.rmi.pb;
 
 option java_multiple_files = true;
-option java_package = "br.ufc.ds.trabalho2.protobuf";
+option java_package = "br.ufc.ds.trabalho2.rmi.pb";
 option java_outer_classname = "ModelProto";
 
 // ==================== Model Classes ====================

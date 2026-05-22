@@ -1,20 +1,20 @@
 package br.ufc.ds.trabalho2.app;
 
 import br.ufc.ds.trabalho2.model.*;
-import java.rmi.server.UnicastRemoteObject;
-import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class InvestidorServiceImpl extends UnicastRemoteObject implements InvestidorServiceRemote {
+/**
+ * Implementação do serviço remoto de investimentos.
+ * Executa métodos remotos no servidor.
+ */
+public class InvestidorServiceImpl implements InvestidorServiceRemote {
 
-    private static final long serialVersionUID = 1L;
     private Map<String, Investidor> investidores;
     private Map<String, OrdemInvestimento> ordens;
     private Map<String, Ativo> ativos;
 
-    public InvestidorServiceImpl() throws RemoteException {
-        super();
+    public InvestidorServiceImpl() {
         this.investidores = new HashMap<>();
         this.ordens = new HashMap<>();
         this.ativos = new HashMap<>();
@@ -25,7 +25,7 @@ public class InvestidorServiceImpl extends UnicastRemoteObject implements Invest
     }
 
     @Override
-    public Investidor criarInvestidor(String investidorId, String nome, String cpf, String email, String telefone) throws RemoteException {
+    public Investidor criarInvestidor(String investidorId, String nome, String cpf, String email, String telefone) {
         Investidor inv = new Investidor(investidorId, nome, cpf, email, telefone);
         investidores.put(investidorId, inv);
         System.out.println("[InvestidorServiceImpl] Investidor criado: " + investidorId);
@@ -33,7 +33,7 @@ public class InvestidorServiceImpl extends UnicastRemoteObject implements Invest
     }
 
     @Override
-    public Investidor obterInvestidor(String investidorId) throws RemoteException {
+    public Investidor obterInvestidor(String investidorId) {
         Investidor inv = investidores.get(investidorId);
         if (inv == null) {
             System.out.println("[InvestidorServiceImpl] Investidor nao encontrado: " + investidorId);
@@ -44,7 +44,7 @@ public class InvestidorServiceImpl extends UnicastRemoteObject implements Invest
     }
 
     @Override
-    public OrdemInvestimento criarOrdem(String ordemId, String tipo, String ticker, long quantidade, double precoUnitario) throws RemoteException {
+    public OrdemInvestimento criarOrdem(String ordemId, String tipo, String ticker, long quantidade, double precoUnitario) {
         if (!ativos.containsKey(ticker)) {
             System.out.println("[InvestidorServiceImpl] Ativo nao encontrado: " + ticker);
             return null;
@@ -57,7 +57,7 @@ public class InvestidorServiceImpl extends UnicastRemoteObject implements Invest
     }
 
     @Override
-    public OrdemInvestimento[] obterOrdensDoInvestidor(String investidorId) throws RemoteException {
+    public OrdemInvestimento[] obterOrdensDoInvestidor(String investidorId) {
         OrdemInvestimento[] resultado = ordens.values().stream()
             .filter(o -> o.getOrdemId().startsWith(investidorId))
             .toArray(OrdemInvestimento[]::new);
@@ -66,7 +66,7 @@ public class InvestidorServiceImpl extends UnicastRemoteObject implements Invest
     }
 
     @Override
-    public double adicionarSaldoCarteira(String investidorId, double valor) throws RemoteException {
+    public double adicionarSaldoCarteira(String investidorId, double valor) {
         Investidor inv = investidores.get(investidorId);
         if (inv == null) {
             System.out.println("[InvestidorServiceImpl] Investidor nao encontrado: " + investidorId);
@@ -78,7 +78,7 @@ public class InvestidorServiceImpl extends UnicastRemoteObject implements Invest
     }
 
     @Override
-    public Ativo obterAtivo(String ticker) throws RemoteException {
+    public Ativo obterAtivo(String ticker) {
         Ativo ativo = ativos.get(ticker);
         if (ativo == null) {
             System.out.println("[InvestidorServiceImpl] Ativo nao encontrado: " + ticker);
