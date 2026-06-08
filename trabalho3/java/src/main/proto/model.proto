@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+package br.ufc.ds.trabalho2.rmi.pb;
+
+option java_multiple_files = true;
+option java_package = "br.ufc.ds.trabalho2.rmi.pb";
+option java_outer_classname = "ModelProto";
+
+// ==================== Model Classes ====================
+
+message Ativo {
+    string ticker = 1;
+    double precoAtual = 2;
+    string descricao = 3;
+    string tipo = 4;  // "ACAO_B3" ou "RENDA_FIXA"
+    oneof tipoSpecifico {
+        AtivoB3 ativoB3 = 5;
+        AtivoFixo ativoFixo = 6;
+    }
+}
+
+message AtivoB3 {
+    string ticker = 1;
+    double precoAtual = 2;
+    string descricao = 3;
+    string segmento = 4;     // Ibovespa, SmallCaps
+    int64 volumeNegociado = 5;
+}
+
+message AtivoFixo {
+    string ticker = 1;
+    double precoAtual = 2;
+    string descricao = 3;
+    double taxaJuros = 4;
+    string dataVencimento = 5;
+}
+
+message OrdemInvestimento {
+    string ordemId = 1;
+    string tipo = 2;          // COMPRA, VENDA
+    string ticker = 3;
+    int64 quantidade = 4;
+    double precoUnitario = 5;
+    double precoTotal = 6;
+    string status = 7;        // EXECUTADA, PENDENTE
+    string dataCriacao = 8;
+}
+
+message Carteira {
+    string carteiraId = 1;
+    map<string, int64> ativos = 2;  // ticker -> quantidade
+    double saldoDisponivel = 3;
+    string dataCriacao = 4;
+}
+
+message Investidor {
+    string investidorId = 1;
+    string nome = 2;
+    string cpf = 3;
+    string email = 4;
+    string telefone = 5;
+    Carteira carteira = 6;
+    string dataCadastro = 7;
+}
+
+message Conta {
+    string contaId = 1;
+    string investidorId = 2;
+    string banco = 3;
+    string agencia = 4;
+    string numeroConta = 5;
+    string tipoConta = 6;
+    double saldo = 7;
+    string dataAbertura = 8;
+}

@@ -1,0 +1,9 @@
+{
+  "name": "trabalho3-js-client",
+  "version": "1.0.0",
+  "description": "Cliente JavaScript para a API do Trabalho 3",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  }
+}
