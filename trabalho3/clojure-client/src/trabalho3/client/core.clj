@@ -2,36 +2,34 @@
   (:gen-class)
   (:require [clojure.data.json :as json]
             [clojure.pprint :refer [pprint]])
-  (:import [java.net URI]
-           [java.net.http HttpClient HttpRequest HttpResponse]))
+  (:import [java.net HttpURLConnection URL]))
 
 (def api-base-url
   (or (System/getenv "API_BASE_URL")
       "http://localhost:8080/api/v1"))
 
-(def client
-  (HttpClient/newHttpClient))
-
 (defn- request
   ([method path] (request method path nil))
   ([method path body]
-   (let [builder (doto (HttpRequest/newBuilder)
-                   (.uri (URI/create (str api-base-url path)))
-                   (.header "Accept" "application/json"))
-         body-publisher (if body
-                          (do
-                            (.header builder "Content-Type" "application/json")
-                            (HttpRequest/BodyPublishers/ofString (json/write-str body)))
-                          (HttpRequest/BodyPublishers/noBody))]
-     (.method builder method body-publisher)
-     (.build builder))))
+   (let [connection ^HttpURLConnection (.openConnection (URL. (str api-base-url path)))]
+     (.setRequestMethod connection method)
+     (.setRequestProperty connection "Accept" "application/json")
+     (when body
+       (.setDoOutput connection true)
+       (.setRequestProperty connection "Content-Type" "application/json")
+       (with-open [writer (java.io.OutputStreamWriter. (.getOutputStream connection) "UTF-8")]
+         (.write writer (json/write-str body))))
+     connection)))
 
 (defn- call-api
   ([method path] (call-api method path nil))
   ([method path body]
-   (let [response (.send client (request method path body) (HttpResponse/BodyHandlers/ofString))
-         status (.statusCode response)
-         raw-body (.body response)]
+   (let [^HttpURLConnection connection (request method path body)
+         status (.getResponseCode connection)
+         stream (if (>= status 400)
+                  (.getErrorStream connection)
+                  (.getInputStream connection))
+         raw-body (if stream (slurp stream) "")]
      (when (>= status 400)
        (throw (ex-info (str status " " raw-body)
                        {:status status

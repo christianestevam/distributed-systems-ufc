@@ -53,7 +53,7 @@ public class InvestmentController {
     }
 
     @GetMapping("/investidores/{investidorId}")
-    public ResponseEntity<Investidor> obterInvestidor(@PathVariable String investidorId) {
+    public ResponseEntity<Investidor> obterInvestidor(@PathVariable("investidorId") String investidorId) {
         Investidor investidor = service.obterInvestidor(investidorId);
         if (investidor == null) {
             return ResponseEntity.notFound().build();
@@ -63,7 +63,7 @@ public class InvestmentController {
 
     @PostMapping("/investidores/{investidorId}/saldo")
     public ResponseEntity<Map<String, Object>> adicionarSaldoCarteira(
-            @PathVariable String investidorId,
+            @PathVariable("investidorId") String investidorId,
             @RequestBody AdicionarSaldoRequest request) {
         Investidor investidor = service.obterInvestidor(investidorId);
         if (investidor == null) {
@@ -79,7 +79,7 @@ public class InvestmentController {
 
     @PostMapping("/investidores/{investidorId}/ordens")
     public ResponseEntity<OrdemInvestimento> criarOrdem(
-            @PathVariable String investidorId,
+            @PathVariable("investidorId") String investidorId,
             @RequestBody CriarOrdemRequest request) {
         Investidor investidor = service.obterInvestidor(investidorId);
         if (investidor == null) {
@@ -105,7 +105,7 @@ public class InvestmentController {
     }
 
     @GetMapping("/investidores/{investidorId}/ordens")
-    public ResponseEntity<List<OrdemInvestimento>> obterOrdensDoInvestidor(@PathVariable String investidorId) {
+    public ResponseEntity<List<OrdemInvestimento>> obterOrdensDoInvestidor(@PathVariable("investidorId") String investidorId) {
         Investidor investidor = service.obterInvestidor(investidorId);
         if (investidor == null) {
             return ResponseEntity.notFound().build();
@@ -121,7 +121,7 @@ public class InvestmentController {
     }
 
     @GetMapping("/ativos/{ticker}")
-    public ResponseEntity<Ativo> obterAtivo(@PathVariable String ticker) {
+    public ResponseEntity<Ativo> obterAtivo(@PathVariable("ticker") String ticker) {
         Ativo ativo = service.obterAtivo(ticker);
         if (ativo == null) {
             return ResponseEntity.notFound().build();

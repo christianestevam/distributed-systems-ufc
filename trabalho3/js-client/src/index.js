@@ -113,7 +113,15 @@ async function main() {
       console.log('7. Listar ativos');
       console.log('0. Sair');
 
-      const opcao = (await rl.question('Opção: ')).trim();
+      let opcao;
+      try {
+        opcao = (await rl.question('Opção: ')).trim();
+      } catch (error) {
+        if (error && error.code === 'ERR_USE_AFTER_CLOSE') {
+          break;
+        }
+        throw error;
+      }
 
       try {
         if (opcao === '1') await criarInvestidor(rl);
