@@ -65,6 +65,10 @@ public class InvestidorServiceImpl implements InvestidorServiceRemote {
         return resultado;
     }
 
+    public java.util.Map<String, Ativo> obterTodosAtivos() {
+        return ativos;
+    }
+
     @Override
     public double adicionarSaldoCarteira(String investidorId, double valor) {
         Investidor inv = investidores.get(investidorId);

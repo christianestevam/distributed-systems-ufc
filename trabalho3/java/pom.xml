@@ -29,6 +29,13 @@
             <artifactId>protobuf-java</artifactId>
             <version>4.34.1</version>
         </dependency>
+
+        <!-- Dependência ao módulo de serviço do trabalho 2 -->
+        <dependency>
+            <groupId>br.ufc.ds</groupId>
+            <artifactId>trabalho2-rmi</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 
     <build>
