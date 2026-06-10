@@ -1,0 +1,16 @@
+{
+  "name": "trabalho4-js-client",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node src/index.js"
+  }
+}{
+  "name": "trabalho4-js-client",
+  "version": "1.0.0",
+  "description": "Cliente JavaScript para consultar a API do Trabalho 4",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  }
+}

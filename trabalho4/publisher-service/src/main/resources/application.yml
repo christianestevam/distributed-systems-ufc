@@ -1,0 +1,13 @@
+server:
+  port: ${PUBLISHER_PORT:8082}
+
+spring:
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:localhost}
+    port: ${SPRING_RABBITMQ_PORT:5672}
+    username: ${SPRING_RABBITMQ_USERNAME:bolsa}
+    password: ${SPRING_RABBITMQ_PASSWORD:bolsa}
+
+publisher:
+  bootstrap:
+    enabled: ${PUBLISHER_BOOTSTRAP_ENABLED:false}

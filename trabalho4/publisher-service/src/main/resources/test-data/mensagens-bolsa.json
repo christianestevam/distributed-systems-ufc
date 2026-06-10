@@ -1,0 +1,12 @@
+[
+  {"ticker":"PETR4","preco":39.10,"volume":1000000,"bolsa":"B3","origem":"feed-principal","receivedAt":"2026-06-08T10:00:00Z"},
+  {"ticker":"VALE3","preco":68.30,"volume":800000,"bolsa":"B3","origem":"feed-principal","receivedAt":"2026-06-08T10:00:01Z"},
+  {"ticker":"ITUB4","preco":31.40,"volume":500000,"bolsa":"B3","origem":"feed-principal","receivedAt":"2026-06-08T10:00:02Z"},
+  {"ticker":"BBAS3","preco":28.45,"volume":600000,"bolsa":"B3","origem":"feed-principal","receivedAt":"2026-06-08T10:00:03Z"},
+  {"ticker":"WEGE3","preco":41.28,"volume":450000,"bolsa":"B3","origem":"feed-principal","receivedAt":"2026-06-08T10:00:04Z"},
+  {"ticker":"MGLU3","preco":7.12,"volume":2200000,"bolsa":"B3","origem":"feed-principal","receivedAt":"2026-06-08T10:00:05Z"},
+  {"ticker":"ABEV3","preco":13.87,"volume":1500000,"bolsa":"B3","origem":"feed-principal","receivedAt":"2026-06-08T10:00:06Z"},
+  {"ticker":"BBDC4","preco":15.90,"volume":900000,"bolsa":"B3","origem":"feed-principal","receivedAt":"2026-06-08T10:00:07Z"},
+  {"ticker":"LREN3","preco":18.32,"volume":750000,"bolsa":"B3","origem":"feed-principal","receivedAt":"2026-06-08T10:00:08Z"},
+  {"ticker":"PETR4","preco":39.25,"volume":1010000,"bolsa":"B3","origem":"feed-secundario","receivedAt":"2026-06-08T10:00:09Z"}
+]

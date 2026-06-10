@@ -1,0 +1,77 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: trabalho4-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-trabalho4}
+      POSTGRES_USER: ${POSTGRES_USER:-trabalho4}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-trabalho4}
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-trabalho4} -d ${POSTGRES_DB:-trabalho4}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: trabalho4-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER:-trabalho4}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS:-trabalho4}
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  api-service:
+    build:
+      context: ./api-service
+    container_name: trabalho4-api
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-trabalho4}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-trabalho4}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-trabalho4}
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  worker-service:
+    build:
+      context: ./worker-service
+    container_name: trabalho4-worker
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-trabalho4}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-trabalho4}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-trabalho4}
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: ${RABBITMQ_DEFAULT_USER:-trabalho4}
+      SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_DEFAULT_PASS:-trabalho4}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
+
+  publisher-service:
+    build:
+      context: ./publisher-service
+    container_name: trabalho4-publisher
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: ${RABBITMQ_DEFAULT_USER:-trabalho4}
+      SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_DEFAULT_PASS:-trabalho4}
+    ports:
+      - "8090:8090"
+    depends_on:
+      rabbitmq:
+        condition: service_started
+
+volumes:
+  postgres_data:

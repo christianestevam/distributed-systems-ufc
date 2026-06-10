@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/bolsa}
+    username: ${SPRING_DATASOURCE_USERNAME:bolsa}
+    password: ${SPRING_DATASOURCE_PASSWORD:bolsa}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:localhost}
+    port: ${SPRING_RABBITMQ_PORT:5672}
+    username: ${SPRING_RABBITMQ_USERNAME:bolsa}
+    password: ${SPRING_RABBITMQ_PASSWORD:bolsa}
